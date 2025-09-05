@@ -8,6 +8,10 @@ from flask_migrate import Migrate
 from src.db import db
 from src.admin.setup_admin import setup_admin
 from flask_cors import CORS
+from src.routes.cart import cart
+
+app.register_blueprint(cart, url_prefix="/api")
+
 
 from flask_jwt_extended import (
     JWTManager,
