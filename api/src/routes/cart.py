@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from api.models.cart import CartItem
-from api.db import db
+from src.models.cart import CartItem
+from src.db import db
 import requests
 import os
 

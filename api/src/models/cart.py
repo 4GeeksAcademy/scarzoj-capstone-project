@@ -1,5 +1,5 @@
 from datetime import datetime
-from api.db import db
+from src.db import db
 
 
 class CartItem(db.Model):
