@@ -8,6 +8,8 @@ from flask_migrate import Migrate
 from src.db import db
 from src.admin.setup_admin import setup_admin
 from flask_cors import CORS
+from src.routes.cart import cart
+
 
 from flask_jwt_extended import (
     JWTManager,
@@ -53,6 +55,7 @@ def health_check():
 
 
 auth_routes(app)
+app.register_blueprint(cart, url_prefix="/api")
 
 if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 8080))
