@@ -8,7 +8,6 @@ flask = "*"
 sqlalchemy = "*"
 gunicorn = "*"
 flask-migrate = "*"
-flask-sqlalchemy = "*"
 flask-jwt-extended = "*"
 flask-cors = "*"
 bcrypt = "*"
@@ -17,6 +16,7 @@ python-dotenv = "*"
 cloudinary = "*"
 flask-admin = "*"
 requests = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 

@@ -14,7 +14,6 @@ from flask_jwt_extended import (
 
 
 def auth_routes(app):
-
     @app.route("/register", methods=["POST"])
     def register():
         data = request.get_json()
@@ -28,20 +27,22 @@ def auth_routes(app):
         password = data["password"]
 
         # Check for existing user
-        existing_user = db.session.query(Users).filter(
-            or_(Users.user_name == user_name, Users.email == email)
-        ).first()
+        existing_user = (
+            db.session.query(Users)
+            .filter(or_(Users.user_name == user_name, Users.email == email))
+            .first()
+        )
 
         if existing_user:
             return jsonify({"error": "Username or Email already registered"}), 400
 
         # Hash password
-        hashed_password = bcrypt.hashpw(password.encode(
-            "utf-8"), bcrypt.gensalt()).decode("utf-8")
+        hashed_password = bcrypt.hashpw(
+            password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8")
 
         # Create user
-        new_user = Users(user_name=user_name, email=email,
-                         password=hashed_password)
+        new_user = Users(user_name=user_name, email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
 
@@ -70,7 +71,12 @@ def auth_routes(app):
         csrf_token = get_csrf_token(access_token)
 
         response = jsonify(
-            {"msg": "login successful", "user": user.serialize(), "csrf_token": csrf_token})
+            {
+                "msg": "login successful",
+                "user": user.serialize(),
+                "csrf_token": csrf_token,
+            }
+        )
         set_access_cookies(response, access_token)
         return response
 
