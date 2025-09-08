@@ -1,12 +1,13 @@
 import os
 import time
+from src.routes.open_library import open_library_routes
 from src.utils import generate_sitemap
 from src.routes.auth import auth_routes
+from src.routes.google_books import google_books_routes
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_migrate import Migrate
 from src.db import db
-from src.admin.setup_admin import setup_admin
 from flask_cors import CORS
 
 from flask_jwt_extended import (
@@ -53,6 +54,8 @@ def health_check():
 
 
 auth_routes(app)
+google_books_routes(app)
+open_library_routes(app)
 
 if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 8080))

@@ -16,6 +16,7 @@ psycopg2-binary = "*"
 python-dotenv = "*"
 cloudinary = "*"
 flask-admin = "*"
+requests = "*"
 
 [dev-packages]
 
