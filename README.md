@@ -2,14 +2,14 @@
 
 ## 🏠 Root
 
-The root of the project is set up with **automatic pre-commit autolinting** for **JavaScript** and **Python** using **Prettier** 🖋️ and **Ruff** 🐍.  
+The root of the project is set up with **automatic pre-commit autolinting** for **JavaScript** and **Python** using **Prettier** 🖋️ and **Ruff** 🐍.
 
 ## 🌐 Web (`/web`)
 
 ### ⚛️ React Template
 
-The front-end uses a **React template from Vite**.  
-Scaffolding reference: [Vite Docs](https://vite.dev/guide/#scaffolding-your-first-vite-project)  
+The front-end uses a **React template from Vite**.
+Scaffolding reference: [Vite Docs](https://vite.dev/guide/#scaffolding-your-first-vite-project)
 
 ### 📦 Necessary Packages for FE
 
@@ -35,8 +35,8 @@ Scaffolding reference: [Vite Docs](https://vite.dev/guide/#scaffolding-your-firs
 
 ### 🐍 Pipenv
 
-Back-end uses **Pipenv** for dependency management.  
-Installation reference: [Pipenv Docs](https://pipenv.pypa.io/en/latest/installation.html#preferred-installation-of-pipenv)  
+Back-end uses **Pipenv** for dependency management.
+Installation reference: [Pipenv Docs](https://pipenv.pypa.io/en/latest/installation.html#preferred-installation-of-pipenv)
 
 ### 📦 Necessary Packages for BE
 
@@ -49,11 +49,11 @@ Installation reference: [Pipenv Docs](https://pipenv.pypa.io/en/latest/installat
 
 ### 🔑 Environment Variables
 
-Make sure your environment variables are correctly set for **development** (Codespaces) and **deployment** (Render).  
+Make sure your environment variables are correctly set for **development** (Codespaces) and **deployment** (Render).
 
-- `DATABASE_URL` 🌐 → Your external database URL from the DB in the Render project 
-- `JWT_SECRET_KEY` 🔑 → Your generated secret string  
+- `DATABASE_URL` 🌐 → Your external database URL from the DB in the Render project
+- `JWT_SECRET_KEY` 🔑 → Your generated secret string
 
 ---
 
-💡 **Tip:** Keep this README handy as your **quick-start guide** for both front-end and back-end setup!  
+💡 **Tip:** Keep this README handy as your **quick-start guide** for both front-end and back-end setup!

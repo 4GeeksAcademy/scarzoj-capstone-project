@@ -14,38 +14,45 @@ from flask_jwt_extended import (
 
 
 def auth_routes(app):
-
     @app.route("/register", methods=["POST"])
     def register():
-        data = request.get_json()
+        data = (
+            request.get_json()
+        )  # es la info que recibe, lee el json que enviamos por postman
         required_fields = ["user_name", "email", "password"]
 
         if not all(field in data for field in required_fields):
             return jsonify({"error": "Missing required fields"}), 400
 
-        user_name = data["user_name"]
+        user_name = data[
+            "user_name"
+        ]  # extrae los vawlors json y los guarda en una variable 26-28
         email = data["email"]
         password = data["password"]
 
         # Check for existing user
-        existing_user = db.session.query(Users).filter(
-            or_(Users.user_name == user_name, Users.email == email)
-        ).first()
+        existing_user = (
+            db.session.query(Users)
+            .filter(or_(Users.user_name == user_name, Users.email == email))
+            .first()
+        )
 
         if existing_user:
             return jsonify({"error": "Username or Email already registered"}), 400
 
         # Hash password
-        hashed_password = bcrypt.hashpw(password.encode(
-            "utf-8"), bcrypt.gensalt()).decode("utf-8")
+        hashed_password = bcrypt.hashpw(
+            password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8")
 
         # Create user
-        new_user = Users(user_name=user_name, email=email,
-                         password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+        new_user = Users(user_name=user_name, email=email, password=hashed_password)
+        db.session.add(new_user)  # lo agrega a la base de datos
+        db.session.commit()  # lo guarda
 
-        return jsonify({"message": "User registered successfully"}), 201
+        return jsonify(
+            {"message": "User registered successfully"}
+        ), 201  # confirma que funciona
 
     @app.route("/login", methods=["POST"])
     def login():
@@ -70,7 +77,12 @@ def auth_routes(app):
         csrf_token = get_csrf_token(access_token)
 
         response = jsonify(
-            {"msg": "login successful", "user": user.serialize(), "csrf_token": csrf_token})
+            {
+                "msg": "login successful",
+                "user": user.serialize(),
+                "csrf_token": csrf_token,
+            }
+        )
         set_access_cookies(response, access_token)
         return response
 
