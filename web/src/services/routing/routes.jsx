@@ -1,20 +1,20 @@
-import { Home } from "../../pages/Home";
-import { Login } from "../../pages/Login";
+import { Home } from '../../pages/HomePage';
+import { Login } from '../../pages/LoginPage';
 
 export const routesConfig = [
   {
-    name: "Root",
-    path: "/",
+    name: 'Root',
+    path: '/',
     component: <Home />,
   },
   {
-    name: "Login",
-    path: "/login",
+    name: 'Login',
+    path: '/login',
     component: <Login />,
   },
   {
-    name: "All",
-    path: "*",
+    name: 'All',
+    path: '*',
     component: <Home />,
   },
 ];

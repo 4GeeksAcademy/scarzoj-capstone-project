@@ -1,16 +1,16 @@
-import { useContext, useState } from "react";
-import { Button, Container, TextField, FormGroup } from "@mui/material";
-import { UserContext } from "../context/User";
+import { useContext, useState } from 'react';
+import { Button, Container, TextField, FormGroup } from '@mui/material';
+import { UserContext } from '../context/User';
 
 export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const { login } = useContext(UserContext);
 
   return (
     <Container>
-      <FormGroup className="mb-3" controlId="formBasicEmail">
+      <FormGroup className="mb-3" controlid="formBasicEmail">
         <TextField
           type="email"
           placeholder="Enter email"
@@ -28,7 +28,11 @@ export const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </FormGroup>
-      <Button variant="primary" onClick={() => login(email, password)}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => login(email, password)}
+      >
         Submit
       </Button>
     </Container>

@@ -1,0 +1,20 @@
+.card-book {
+  width: 200px;
+  max-width: 100%;
+  border: 2px solid rgb(22, 136, 241);
+  background-color: rgb(30, 192, 233);
+  border-radius: 12px;
+  display: flex;
+}
+
+.card-book img {
+  height: 140px;
+  object-fit: cover;
+}
+
+.card-book .card-title {
+  font-size: 0.95rem;
+}
+.card-book .card-text {
+  font-size: 0.9rem;
+}
