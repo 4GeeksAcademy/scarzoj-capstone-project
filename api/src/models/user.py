@@ -96,7 +96,7 @@ class UserBookStatus(db.Model):
     rating: Mapped[int | None] = mapped_column(Integer)
 
     # relaciones:
-    user: Mapped[Users] = relationship(back_populates="book_links")
+    user: Mapped[Users] = relationship(back_populates="books_links")
     book: Mapped[Book] = relationship(back_populates="user_links")
 
     __table_args__ = (Index("ix_user_status", "user_id", "status"),)
