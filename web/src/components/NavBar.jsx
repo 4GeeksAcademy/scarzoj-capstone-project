@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'; //(React): estado local y acceso al contexto.
+import { useContext, useState } from 'react';
 import { NavLink } from 'react-router';
 import {
   AppBar,
@@ -7,38 +7,80 @@ import {
   Menu,
   MenuItem,
   Toolbar,
-} from '@mui/material'; //para la barra superior y el menú.
-import AccountCircle from '@mui/icons-material/AccountCircle'; //iconito de usuario.
+  Button,
+  Collapse,
+  Box,
+} from '@mui/material';
 
-import { UserContext } from '../context/User'; //de ahí saco el usuario y logout
+import AccountCircle from '@mui/icons-material/AccountCircle';
+
+import { UserContext } from '../context/User';
+import SignUpForm from '../pages/SignUpForm';
+import InkFindersLogo from '../assets/InkFindersLogo.png';
+import { Login } from '../pages/LoginPage';
 
 export const NavBar = () => {
-  const { user, logout } = useContext(UserContext); //cojo el usuario y la función de salir.
-  const [anchorEl, setAnchorEl] = useState(null); //controlar el ancla del menú (si hay ancla, si el menú está abierto)
+  const { user, logout } = useContext(UserContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
 
   const handleLogout = () => {
     logout();
     handleClose();
-  }; //llama a logout() y no cierra el menú (porque, ¿para qué? mantenerlo abierto es muy zen).
+  };
 
   const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget); //abre el menú guardando e.currentTarget en anchorEl.
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null); //cierra el menú (pone null).
+    setAnchorEl(null);
   };
 
+  const loginForm = () => {
+    setShowLoginForm((prev) => !prev);
+    setShowSignUpForm(false);
+  };
+
+  const signUpForm = () => {
+    setShowSignUpForm((prev) => !prev);
+    setShowLoginForm(false);
+  };
+
+  const handleLogin = () => {};
+
+  const handleSignUp = () => {};
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: '#629662ff' }}>
       <Toolbar>
-        <NavLink to={'/'}>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Home
+        <NavLink
+          to={'/'}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: 'inherit',
+            flexGrow: 1,
+          }}
+        >
+          <img
+            src={InkFindersLogo}
+            alt="Logo"
+            style={{ height: 40, marginRight: 10 }}
+          />
+
+          <Typography variant="h6" component="div">
+            InkFinders
           </Typography>
         </NavLink>
+
         {user.user_name}
-        <div>
+
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}
+        >
           <IconButton
             size="large"
             aria-label="account of current user"
@@ -49,6 +91,64 @@ export const NavBar = () => {
           >
             <AccountCircle />
           </IconButton>
+
+          <Box sx={{ position: 'relative', ml: 1 }}>
+            <Button
+              variant="contained"
+              onClick={loginForm}
+              sx={{ backgroundColor: '#646262ff' }}
+            >
+              Login
+            </Button>
+            <Collapse
+              in={showLoginForm}
+              timeout="auto"
+              unmountOnExit
+              sx={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                zIndex: 10,
+                mt: 1,
+                backgroundColor: 'background.paper',
+                boxShadow: 3,
+                borderRadius: 1,
+                maxWidth: 320,
+                width: 'max-content',
+              }}
+            >
+              <Login onSubmit={handleLogin} />
+            </Collapse>
+          </Box>
+
+          <Box sx={{ position: 'relative', ml: 1 }}>
+            <Button
+              variant="contained"
+              onClick={signUpForm}
+              sx={{ backgroundColor: '#646262ff' }}
+            >
+              Sign In
+            </Button>
+            <Collapse
+              in={showSignUpForm}
+              timeout="auto"
+              unmountOnExit
+              sx={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                zIndex: 10,
+                mt: 1,
+                backgroundColor: 'background.paper',
+                boxShadow: 3,
+                borderRadius: 1,
+                maxWidth: 320,
+                width: 'max-content',
+              }}
+            >
+              <SignUpForm onSubmit={handleSignUp} />
+            </Collapse>
+          </Box>
           <Menu
             id="menu-appbar"
             anchorEl={anchorEl}
@@ -66,7 +166,7 @@ export const NavBar = () => {
           >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
-        </div>
+        </Box>
       </Toolbar>
     </AppBar>
   );

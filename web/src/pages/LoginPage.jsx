@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Button, Container, TextField, FormGroup } from '@mui/material';
+import { Box, Paper, TextField, Typography, Button } from '@mui/material';
 import { UserContext } from '../context/User';
 
 export const Login = () => {
@@ -8,33 +8,41 @@ export const Login = () => {
 
   const { login } = useContext(UserContext);
 
+  const handleSubmit = () => {
+    login(email, password);
+  };
+
   return (
-    <Container>
-      <FormGroup className="mb-3" controlid="formBasicEmail">
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      <Paper sx={{ p: 3, width: 300 }}>
+        <Typography variant="h6" gutterBottom>
+          Login
+        </Typography>
         <TextField
+          fullWidth
+          margin="normal"
+          label="Email"
           type="email"
-          placeholder="Enter email"
           value={email}
-          label="Email address"
           onChange={(e) => setEmail(e.target.value)}
         />
-      </FormGroup>
-      <FormGroup className="mb-3" controlId="formBasicPassword">
         <TextField
-          type="password"
-          placeholder="Password"
+          fullWidth
+          margin="normal"
           label="Password"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-      </FormGroup>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => login(email, password)}
-      >
-        Submit
-      </Button>
-    </Container>
+        <Button
+          fullWidth
+          variant="contained"
+          sx={{ mt: 2, backgroundColor: '#646262ff' }}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </Paper>
+    </Box>
   );
 };

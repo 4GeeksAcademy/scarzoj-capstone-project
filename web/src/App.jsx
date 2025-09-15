@@ -1,16 +1,14 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route } from 'react-router';
 
-import { NavBar } from "./components/NavBar";
-import { routesConfig } from "./services/routing/routes";
-import { GuardedRoute } from "./components/routing/GuardedRoute";
-import { LoginRedirect } from "./components/routing/LoginRedirect";
+import { NavBar } from './components/NavBar';
+import { routesConfig } from './services/routing/routes';
+import { GuardedRoute } from './components/routing/GuardedRoute';
 
 export const App = () => {
   return (
     <>
       <NavBar />
       <Routes>
-        <Route path="/login" element={<LoginRedirect />} />
         <Route element={<GuardedRoute />}>
           {routesConfig.map((route) => {
             return (
