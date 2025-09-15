@@ -50,8 +50,6 @@ def get_place(place_id):
 
 
 # esta ruta es para listar todos los placessss
-
-
 @places_bp.route("/places", methods=["GET"])
 def list_places():
     page = request.args.get("page", 1, type=int)

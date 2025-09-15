@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Favorite, User, Place
+from src.models import db, Favorite, User, Place
 
 favorites_bp = Blueprint("favorites", __name__)
 
@@ -17,10 +17,8 @@ def get_favorites():
 @favorites_bp.route("/favorites", methods=["POST"])
 def create_favorite():
     data = request.get_json()
-
     user_id = data.get("user_id")
     place_id = data.get("place_id")
-
     user = User.query.get(user_id)
     place = Place.query.get(place_id)
 
