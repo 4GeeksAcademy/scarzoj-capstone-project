@@ -44,6 +44,7 @@ const LandingPage = () => {
         />
         <Typography
           variant="h2"
+          component="h1"
           sx={{
             fontWeight: 'bold',
             color: 'white',
@@ -52,8 +53,12 @@ const LandingPage = () => {
         >
           InkFinders
         </Typography>
-        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'white' }}>
-          look for your favorite books
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{ fontWeight: 'bold', color: 'white' }}
+        >
+          Look for your favorite books
         </Typography>
       </Box>
     </Box>
