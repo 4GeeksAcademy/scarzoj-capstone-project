@@ -63,8 +63,8 @@ class Book(db.Model):
     id: Mapped[str] = mapped_column(String(64), primary_key=True)  # google_volume_id
     title: Mapped[str | None] = mapped_column(String(512))
     authors_json: Mapped[list[str] | None] = mapped_column(JSON)
-    thumbnail: Mapped[str | None] = mapped_column(String(1024))
-    info_link: Mapped[str | None] = mapped_column(String(1024))
+    thumbnail: Mapped[str | None] = mapped_column(String(1024))  # Miniatura del libro
+    info_link: Mapped[str | None] = mapped_column(String(1024))  # Enlace informativo
 
     # relaciones:
     user_links: Mapped[list["UserBookStatus"]] = relationship(
