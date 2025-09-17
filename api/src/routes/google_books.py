@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     jwt_required,
 )  # Extensión de Flask para JWT: control de acceso por token.
 
-GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/"
+GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
 
 
 def google_books_routes(
