@@ -8,11 +8,22 @@ import { isEmpty } from 'lodash';
 function Sidebar() {
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
 
   const toggleDrawer = () => {
     setIsOpen((prev) => !prev);
   };
+  const handleSearch = () => {
+    if (query.trim() === '') return;
+    console.log('Buscando:', query);
+    setIsOpen(false);
+  };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
   if (isEmpty(user)) return null;
   return (
     <div>
@@ -44,6 +55,9 @@ function Sidebar() {
             size="small"
             variant="outlined"
             placeholder="Inicia tu busqueda"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </Box>
       </Drawer>

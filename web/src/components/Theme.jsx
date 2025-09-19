@@ -1,6 +1,5 @@
 import { createTheme } from '@mui/material/styles';
 
-// Crear el tema
 const theme = createTheme({
   typography: {
     fontFamily: ['Inter', 'sans-serif'].join(','),

@@ -15,8 +15,8 @@ export const Login = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
       <Paper sx={{ p: 3, width: 300 }}>
-        <Typography variant="h6" gutterBottom>
-          Login
+        <Typography variant="h6" gutterBottom align="center">
+          Incia sesión
         </Typography>
         <TextField
           fullWidth
@@ -29,7 +29,7 @@ export const Login = () => {
         <TextField
           fullWidth
           margin="normal"
-          label="Password"
+          label="Contraseña"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -40,7 +40,7 @@ export const Login = () => {
           sx={{ mt: 2 }}
           onClick={handleSubmit}
         >
-          Submit
+          Enviar
         </Button>
       </Paper>
     </Box>

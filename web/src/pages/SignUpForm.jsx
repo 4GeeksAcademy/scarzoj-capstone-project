@@ -16,26 +16,21 @@ const SignUpForm = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
       <Paper sx={{ p: 3, width: 300 }}>
-        <Typography variant="h6" gutterBottom>
-          Sign Up
+        <Typography variant="h6" gutterBottom align="center">
+          Registrate y Empieza
         </Typography>
         <form onSubmit={handleSubmit}>
-          <TextField fullWidth margin="normal" label="Name" name="name" />
+          <TextField fullWidth margin="normal" label="Nombre" name="name" />
           <TextField fullWidth margin="normal" label="Email" name="email" />
           <TextField
             fullWidth
             margin="normal"
-            label="Password"
+            label="Contraseña"
             type="password"
             name="password"
           />
-          <Button
-            fullWidth
-            variant="contained"
-            type="submit"
-            sx={{ mt: 2, backgroundColor: '#646262ff' }}
-          >
-            Register
+          <Button fullWidth variant="contained" type="submit" sx={{ mt: 2 }}>
+            Registrarse
           </Button>
         </form>
       </Paper>

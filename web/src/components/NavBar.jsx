@@ -98,7 +98,7 @@ export const NavBar = () => {
             <>
               <Box sx={{ position: 'relative', ml: 1 }}>
                 <Button variant="contained" onClick={loginForm}>
-                  Login
+                  Entrar
                 </Button>
                 <Collapse
                   in={showLoginForm}
@@ -129,7 +129,7 @@ export const NavBar = () => {
 
               <Box sx={{ position: 'relative', ml: 1 }}>
                 <Button variant="contained" onClick={signUpForm}>
-                  Sign In
+                  Registrarse
                 </Button>
                 <Collapse
                   in={showSignUpForm}
@@ -174,7 +174,7 @@ export const NavBar = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>Salir</MenuItem>
           </Menu>
         </Box>
       </Toolbar>
