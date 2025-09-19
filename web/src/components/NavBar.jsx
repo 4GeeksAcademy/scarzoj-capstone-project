@@ -10,10 +10,12 @@ import {
   Button,
   Collapse,
   Box,
+  ClickAwayListener,
 } from '@mui/material';
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
+import Sidebar from './Sidebar';
 import { UserContext } from '../context/User';
 import SignUpForm from '../pages/SignUpForm';
 import InkFindersLogo from '../assets/InkFindersLogo.png';
@@ -53,8 +55,9 @@ export const NavBar = () => {
   const handleSignUp = () => {};
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#629662ff' }}>
+    <AppBar position="static">
       <Toolbar>
+        <Sidebar />
         <NavLink
           to={'/'}
           style={{
@@ -91,64 +94,71 @@ export const NavBar = () => {
           >
             <AccountCircle />
           </IconButton>
+          {!user || Object.keys(user).length === 0 ? (
+            <>
+              <Box sx={{ position: 'relative', ml: 1 }}>
+                <Button variant="contained" onClick={loginForm}>
+                  Login
+                </Button>
+                <Collapse
+                  in={showLoginForm}
+                  timeout="auto"
+                  unmountOnExit
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    zIndex: 10,
+                    mt: 1,
+                    backgroundColor: 'background.paper',
+                    boxShadow: 3,
+                    borderRadius: 1,
+                    maxWidth: 320,
+                    width: 'max-content',
+                  }}
+                >
+                  <ClickAwayListener
+                    onClickAway={() => setShowLoginForm(false)}
+                  >
+                    <Box>
+                      <Login onSubmit={handleLogin} />
+                    </Box>
+                  </ClickAwayListener>
+                </Collapse>
+              </Box>
 
-          <Box sx={{ position: 'relative', ml: 1 }}>
-            <Button
-              variant="contained"
-              onClick={loginForm}
-              sx={{ backgroundColor: '#646262ff' }}
-            >
-              Login
-            </Button>
-            <Collapse
-              in={showLoginForm}
-              timeout="auto"
-              unmountOnExit
-              sx={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                zIndex: 10,
-                mt: 1,
-                backgroundColor: 'background.paper',
-                boxShadow: 3,
-                borderRadius: 1,
-                maxWidth: 320,
-                width: 'max-content',
-              }}
-            >
-              <Login onSubmit={handleLogin} />
-            </Collapse>
-          </Box>
-
-          <Box sx={{ position: 'relative', ml: 1 }}>
-            <Button
-              variant="contained"
-              onClick={signUpForm}
-              sx={{ backgroundColor: '#646262ff' }}
-            >
-              Sign In
-            </Button>
-            <Collapse
-              in={showSignUpForm}
-              timeout="auto"
-              unmountOnExit
-              sx={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                zIndex: 10,
-                mt: 1,
-                backgroundColor: 'background.paper',
-                boxShadow: 3,
-                borderRadius: 1,
-                maxWidth: 320,
-                width: 'max-content',
-              }}
-            >
-              <SignUpForm onSubmit={handleSignUp} />
-            </Collapse>
-          </Box>
+              <Box sx={{ position: 'relative', ml: 1 }}>
+                <Button variant="contained" onClick={signUpForm}>
+                  Sign In
+                </Button>
+                <Collapse
+                  in={showSignUpForm}
+                  timeout="auto"
+                  unmountOnExit
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    zIndex: 10,
+                    mt: 1,
+                    backgroundColor: 'background.paper',
+                    boxShadow: 3,
+                    borderRadius: 1,
+                    maxWidth: 320,
+                    width: 'max-content',
+                  }}
+                >
+                  <ClickAwayListener
+                    onClickAway={() => setShowSignUpForm(false)}
+                  >
+                    <Box>
+                      <SignUpForm onSubmit={handleSignUp} />
+                    </Box>
+                  </ClickAwayListener>
+                </Collapse>
+              </Box>
+            </>
+          ) : null}
           <Menu
             id="menu-appbar"
             anchorEl={anchorEl}

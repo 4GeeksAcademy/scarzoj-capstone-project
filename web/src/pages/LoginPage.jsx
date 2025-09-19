@@ -37,7 +37,7 @@ export const Login = () => {
         <Button
           fullWidth
           variant="contained"
-          sx={{ mt: 2, backgroundColor: '#646262ff' }}
+          sx={{ mt: 2 }}
           onClick={handleSubmit}
         >
           Submit
