@@ -9,7 +9,7 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from src.db import db
 from flask_cors import CORS
-from src.routes import places_bp
+from src.routes.ruta_places import places_bp
 from flask_jwt_extended import (
     JWTManager,
 )

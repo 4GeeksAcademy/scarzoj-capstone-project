@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint
-from src.models import Places
+from src.models.places_dani import Places
 from src.db import db
 from flask_jwt_extended import jwt_required
 
