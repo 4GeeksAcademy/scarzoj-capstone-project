@@ -24,7 +24,7 @@ services:
       - key: DATABASE_URL
         value: "postgresql://username:password@host:port/dbname"
       - key: JWT_SECRET_KEY
-        value: "supersecretkey"
+        value: "JntsUKap53I8pqGTo1Hz4XLk2RHo_iCcNtItpCmDIdg"
 
 databases:
   - name: mydb
