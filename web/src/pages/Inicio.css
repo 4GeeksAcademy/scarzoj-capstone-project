@@ -1,0 +1,114 @@
+:root {
+  --header: #bfeeff;
+  /* azul claro superior */
+  --accent: #0e5767;
+  /* azul oscuro bordes */
+  --accent-dark: #0b4250;
+  /* azul más oscuro */
+  --hero: #e9f8ff;
+  /* fondo hero */
+}
+
+/* Header */
+.df-header {
+  background: var(--header);
+  border-bottom: 6px solid var(--accent);
+}
+
+.df-navbar .navbar-brand {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.df-dropdown .dropdown-menu {
+  background: var(--accent-dark);
+  border: none;
+}
+
+.df-dropdown .dropdown-item {
+  color: #fff;
+}
+
+.df-dropdown .dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Botones de login/signup */
+.df-nav-btn {
+  background: #bfe6f2;
+  border: 2px solid var(--accent-dark);
+  color: var(--accent-dark);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.df-nav-btn:hover {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+/* Hero */
+.df-main {
+  background: var(--hero);
+  padding: 60px 20px;
+}
+
+.df-title {
+  font-size: 3rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.df-lead {
+  max-width: 850px;
+  margin: 0 auto 25px;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+/* Botón principal */
+.df-cta {
+  background: var(--accent);
+  color: #fff;
+  border: 2px solid #083b45;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.df-cta:hover {
+  background: #083b45;
+}
+
+/* Gallery */
+.df-gallery {
+  border-top: 6px solid var(--accent);
+  background: #f6fbfd;
+}
+
+.df-gallery img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Footer */
+.df-footer {
+  background: var(--header);
+  border-top: 6px solid var(--accent);
+  padding: 12px 0;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .df-title {
+    font-size: 2rem;
+  }
+
+  .df-gallery img {
+    height: 180px;
+  }
+}

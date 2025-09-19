@@ -1,20 +1,20 @@
-import { Home } from "../../pages/Home";
-import { Login } from "../../pages/Login";
+import DogFriendly from '../../pages/Inicio';
+import { Login } from '../../pages/Login';
 
 export const routesConfig = [
   {
-    name: "Root",
-    path: "/",
-    component: <Home />,
+    name: 'Root',
+    path: '/',
+    component: <DogFriendly />,
   },
   {
-    name: "Login",
-    path: "/login",
+    name: 'Login',
+    path: '/login',
     component: <Login />,
   },
   {
-    name: "All",
-    path: "*",
-    component: <Home />,
+    name: 'All',
+    path: '*',
+    component: <DogFriendly />,
   },
 ];
