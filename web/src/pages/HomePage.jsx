@@ -1,4 +1,8 @@
-import { getCurrentUser, updateUserProfile } from '../services/api/users';
+import {
+  getCurrentUser,
+  updateUserProfile,
+  uploadUserAvatar,
+} from '../services/api/users';
 import Grid from '@mui/material/Grid2';
 import {
   Avatar,
@@ -10,7 +14,6 @@ import {
   Stack,
   Typography,
   TextField,
-  Divider,
 } from '@mui/material';
 import Edit from '@mui/icons-material/Edit';
 import Save from '@mui/icons-material/Save';
@@ -27,7 +30,7 @@ export const Home = () => {
     avatarUrl: undefined,
   });
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(profile);
+  const [draft, setDraft] = useState({ ...profile, avatarFile: null });
   const fileRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const objectUrlRef = useRef(null);
@@ -81,8 +84,8 @@ export const Home = () => {
       const url = URL.createObjectURL(file);
       objectUrlRef.current = url;
 
-      setDraft((prev) => ({ ...prev, avatarUrl: url }));
-      setProfile((prev) => ({ ...prev, avatarUrl: url })); // descomenta si quieres
+      setDraft((prev) => ({ ...prev, avatarUrl: url, avatarFile: file }));
+      setProfile((prev) => ({ ...prev, avatarUrl: url }));
 
       input.value = '';
     } catch (err) {
@@ -93,10 +96,16 @@ export const Home = () => {
   //GUARDAR CAMBIOS (NICK/BIO/AVATAR)
   const handleSave = async () => {
     try {
+      let avatarUrlToSave = profile.avatarUrl;
+      if (draft.avatarFile) {
+        const { url } = await uploadUserAvatar(draft.avatarFile);
+        avatarUrlToSave = url;
+      }
+
       const payload = {
         nick: draft.nick,
         bio: draft.bio,
-        avatarUrl: draft.avatarUrl,
+        avatarUrl: avatarUrlToSave,
       };
 
       const saved = await updateUserProfile(payload);
@@ -105,10 +114,10 @@ export const Home = () => {
         username: saved?.username ?? profile.username,
         nick: saved?.nick ?? draft.nick,
         bio: saved?.bio ?? draft.bio,
-        avatarUrl: saved?.avatarUrl ?? draft.avatarUrl,
+        avatarUrl: saved?.avatarUrl ?? avatarUrlToSave,
       };
       setProfile(mapped);
-      setDraft(mapped);
+      setDraft({ ...mapped, avatarFile: null });
       setEditing(false);
     } catch (e) {
       console.error('No se pudo guardar el perfil', e);

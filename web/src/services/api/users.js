@@ -58,3 +58,20 @@ export const updateUserProfile = async (payload) => {
     body: JSON.stringify(payload),
   });
 };
+
+export const uploadUserAvatar = async (file) => {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetchWrapper(`${baseUrl}me/avatar`, {
+    method: 'POST',
+    credentials: 'include',
+    body: form,
+  });
+  if (!res.ok) {
+    throw new Error(`Upload avatar failed: ${res.status} ${res.statusText}`);
+  }
+  const data = await res.json();
+  const url = data.url || data.location || data.imageUrl;
+  if (!url) throw new Error('Upload avatar: response missing URL');
+  return { url };
+};
