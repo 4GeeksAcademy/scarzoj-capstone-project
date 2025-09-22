@@ -1,9 +1,9 @@
-import { Routes, Route } from 'react-router';
-import { NavBar } from './components/NavBar';
-import { routesConfig } from './services/routing/routes';
-import { GuardedRoute } from './components/routing/GuardedRoute';
-import { LoginRedirect } from './components/routing/LoginRedirect';
-
+import { Routes, Route } from "react-router";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { NavBar } from "./components/NavBar";
+import { routesConfig } from "./services/routing/routes";
+import { GuardedRoute } from "./components/routing/GuardedRoute";
+import { LoginRedirect } from "./components/routing/LoginRedirect";
 export const App = () => {
   return (
     <>
