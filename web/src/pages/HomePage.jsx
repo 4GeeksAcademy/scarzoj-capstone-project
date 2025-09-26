@@ -21,6 +21,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { useRef, useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router';
 import defaultAvatar from '../assets/ImagenUsuarioGeneral.jpg';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const Home = () => {
   const [profile, setProfile] = useState({
@@ -128,6 +129,14 @@ export const Home = () => {
     setDraft(profile);
     setEditing(false);
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ py: 6, display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
