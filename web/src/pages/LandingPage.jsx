@@ -2,7 +2,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import logo from '/workspaces/InkFinders-FinalProject/web/src/assets/Inkfinders_Book_Club_Logo-removebg-preview.png';
+import logo from '../assets/Inkfinders_Book_Club_Logo-removebg-preview.png';
 
 const theme = createTheme({
   typography: {

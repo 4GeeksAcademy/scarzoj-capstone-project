@@ -20,16 +20,29 @@ const SignUpForm = () => {
           Registrate y Empieza
         </Typography>
         <form onSubmit={handleSubmit}>
-          <TextField fullWidth margin="normal" label="Nombre" name="name" />
-          <TextField fullWidth margin="normal" label="Email" name="email" />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Nombre"
+            name="name"
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Email"
+            ame="email"
+            required
+          />
           <TextField
             fullWidth
             margin="normal"
             label="Contraseña"
             type="password"
             name="password"
+            required
           />
-          <Button fullWidth variant="contained" type="submit" sx={{ mt: 2 }}>
+          <Button f ullWidth variant="contained" type="submit" sx={{ mt: 2 }}>
             Registrarse
           </Button>
         </form>
