@@ -1,0 +1,78 @@
+:root {
+  --header: #bfeeff;
+  --accent: #0e5767;
+  --hero: #e9f8ff;
+  --card-bg: #a8d8a0;
+}
+
+/* Header */
+.Adondeir-header {
+  background: var(--header);
+  border-bottom: 4px solid var(--accent);
+}
+.Adondeir-brand {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.Adondeir-nav-btn {
+  background: #bfe6f2;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+.Adondeir-nav-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Search bar */
+.Adondeir-search {
+  background: var(--accent);
+  padding: 10px;
+}
+.Adondeir-search .form-control {
+  border: none;
+  border-radius: 0;
+}
+.Adondeir-search-btn {
+  background: #083b45;
+  border: none;
+}
+
+/* Main */
+.Adondeir-main {
+  padding: 15px 0;
+}
+.Adondeir-list {
+  background: #f2f9f4;
+  padding: 10px;
+  border-right: 4px solid var(--accent);
+}
+.Adondeir-card {
+  background: var(--card-bg);
+  border: none;
+  border-radius: 8px;
+}
+.Adondeir-img-placeholder {
+  margin-top: 8px;
+  background: #d3e8d0;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 4px;
+}
+.Adondeir-star {
+  font-size: 1.4rem;
+  color: #444;
+}
+.Adondeir-star.filled {
+  color: black;
+}
+
+/* Footer */
+.Adondeir-footer {
+  background: var(--header);
+  border-top: 4px solid var(--accent);
+  padding: 12px 0;
+  font-size: 1rem;
+}

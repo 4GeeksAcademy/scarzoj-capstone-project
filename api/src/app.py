@@ -9,17 +9,17 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from src.db import db
 from flask_cors import CORS
-
+from src.routes.ruta_places import places_bp
 from flask_jwt_extended import (
     JWTManager,
 )
 
 load_dotenv()
-app = Flask(__name__)
+
 start_time = time.time()
+app = Flask(__name__)
 
 db_url = os.getenv("DATABASE_URL")
-
 if db_url is not None:
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 else:
@@ -42,6 +42,12 @@ db.init_app(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 CORS(app, supports_credentials=True)
 
+app.register_blueprint(places_bp)
+
+auth_routes(app)
+google_books_routes(app)
+open_library_routes(app)
+
 
 @app.route("/")
 def sitemap():
@@ -52,10 +58,6 @@ def sitemap():
 def health_check():
     return jsonify({"status": "ok", "uptime": round(time.time() - start_time, 2)}), 200
 
-
-auth_routes(app)
-google_books_routes(app)
-open_library_routes(app)
 
 if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 8080))
