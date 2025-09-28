@@ -11,7 +11,7 @@ import {
 } from 'react-bootstrap';
 import './Inicio.css';
 
-const DogFriendly = () => {
+const Inicio = () => {
   return (
     <>
       {/*Encabezado */}
@@ -54,7 +54,9 @@ const DogFriendly = () => {
             visites. Porque salir con tu mejor amigo de cuatro patas debería ser
             siempre fácil y divertido.
           </p>
-          <Button className="df-cta">¡Llévame ahí!</Button>
+          <Button className="df-cta" href="/adondeir">
+            ¡Llévame ahí!
+          </Button>
         </Container>
       </main>
 
@@ -91,4 +93,4 @@ const DogFriendly = () => {
   );
 };
 
-export default DogFriendly;
+export default Inicio;
