@@ -3,7 +3,6 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import logo from '../assets/Inkfinders_Book_Club_Logo-removebg-preview.png';
-import theme from '../components/Theme';
 
 const LandingPage = () => {
   return (
