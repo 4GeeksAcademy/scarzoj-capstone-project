@@ -1,6 +1,6 @@
 from src.db import db
 from flask import request, jsonify
-from src.models.models import Users
+from src.models.models import Users, Profile
 from sqlalchemy import or_
 import bcrypt
 from flask_jwt_extended import (
@@ -44,6 +44,11 @@ def auth_routes(app):
         # Create user
         new_user = Users(user_name=user_name, email=email, password=hashed_password)
         db.session.add(new_user)
+        db.session.commit()
+        new_profile = Profile(
+            id=new_user.id, avatar="", display_name="", description=""
+        )
+        db.session.add(new_profile)
         db.session.commit()
 
         return jsonify({"message": "User registered successfully"}), 201

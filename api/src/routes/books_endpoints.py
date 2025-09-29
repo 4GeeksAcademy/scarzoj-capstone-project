@@ -1,14 +1,15 @@
 from flask import request, jsonify, abort
 from sqlalchemy import select
-from api.src.reporitory.book_repository import (
+from src.repository.book_repository import (
     volume_to_book_fields,
     upsert_book,
-    set_user_book_status,
     unset_user_book_status,
-    list_user_books,
 )
-from api.src.models.models import db, Users, Book, UserBookStatus, BookStatusEnum
+from src.models.models import db, Users, Book, UserBookStatus, BookStatusEnum
 from src.services.google_books_client import get_volume
+from flask_jwt_extended import (
+    jwt_required,
+)  # Extensión de Flask para JWT: control de acceso por token.
 
 
 def get_current_user() -> Users:
@@ -21,12 +22,15 @@ def get_current_user() -> Users:
     return user
 
 
-def obj_or_404(model, pk, msg: str):  # carga por PK y aborta con 404 si no existe.
-    obj = db.session.get(model, pk)
-    if not obj:
-        return jsonify({"error": msg}), 404  # Devolvemos json + 404
-
-    return obj
+def ensure_book(book_id: str) -> Book:
+    book = db.session.get(Book, book_id)
+    if book:
+        return book
+    v = get_volume(book_id)
+    if not v or not v.get("id"):
+        abort(404, description="No se ha podido importar el libro desde Google")
+    fields = volume_to_book_fields(v)
+    return upsert_book(fields)
 
 
 def serialize_link(
@@ -36,8 +40,8 @@ def serialize_link(
         "user_id": link.user_id,
         "book_id": link.book_id,
         "status": link.status.value,
-        "note": link.note,
-        "rating": link.rating,
+        # "note": link.note,
+        # "rating": link.rating,
         "title": book.title,
         "authors": book.authors_json or [],
         "thumbnail": book.thumbnail,
@@ -46,10 +50,9 @@ def serialize_link(
 
 
 def register_book_endpoints(app):
-    @app.route("/books/import/<string:volume_id>", methods=["POST"])
-    def import_book(
-        volume_id: str,
-    ):  # llama a la API para obtener el volumen (ID), lo mapea y hace upsert en la tabla de datos y devuelve el registro local creado/actualizado
+    @app.route("/books/<string:volume_id>", methods=["POST"])
+    @jwt_required()
+    def import_book(volume_id: str):
         v = get_volume(volume_id)
         if not v or not v.get("id"):
             return jsonify(
@@ -57,7 +60,6 @@ def register_book_endpoints(app):
             ), 404
 
         fields = volume_to_book_fields(v)
-
         book = upsert_book(fields)
 
         return jsonify(
@@ -70,18 +72,13 @@ def register_book_endpoints(app):
             }
         ), 201
 
-    @app.route("/favorite/book/<string:book_id>", methods=["POST"])
+    @app.route("/favorites/add_book/<string:book_id>", methods=["POST"])
+    @jwt_required()
     def add_fav_book(
         book_id: str,
     ):  # añadir un libro a favoritos del usuario actual. Si ya está agregado, devuelve 200.
         user = get_current_user()
-        if not isinstance(user, Users):
-            return user
-
-        book = obj_or_404(Book, book_id, "No se ha encontrado el libro")
-        if not isinstance(book, Book):
-            return book
-
+        book = ensure_book(book_id)
         exists = db.session.scalars(
             select(UserBookStatus).filter_by(
                 user_id=user.id, book_id=book.id, status=BookStatusEnum.favorite
@@ -98,41 +95,28 @@ def register_book_endpoints(app):
 
         return jsonify(serialize_link(link, book)), 201
 
-    @app.route("/favorite/book/<string:book_id>", methods=["DELETE"])
+    @app.route("/favorites/delete_book/<string:book_id>", methods=["DELETE"])
+    @jwt_required()
     def remove_fav_book(
         book_id: str,
     ):  # quitamos un libro de la lista de favoritos actual
         user = get_current_user()
-        if not isinstance(user, Users):
-            return user
+        deleted = unset_user_book_status(user.id, book_id, BookStatusEnum.favorite)
 
-        book = obj_or_404(Book, book_id, "No se ha encontrado el libro")
-        if not isinstance(book, Book):
-            return book
-
-        link = db.session.scalars(
-            select(UserBookStatus).filter_by(
-                user_id=user.id, book_id=book.id, status=BookStatusEnum.favorite
-            )
-        ).first()
-        if not link:
-            return jsonify({"message": "No estaba en favoritos"}), 200
-
-        db.session.delete(link)
-        db.session.commit()
-        return jsonify({"message": "Eliminado de favoritos"}), 200
+        if deleted:
+            return jsonify({"message": "Eliminado de favoritos"}), 200
+        else:
+            return jsonify({"message": "No estaba en favoritos (sin cambios)"}), 200
 
     # TO READ
-
-    @app.route("/to_read/book/<string:book_id>", methods=["POST"])
+    @app.route("/to_read/add_book/<string:book_id>", methods=["POST"])
+    @jwt_required()
     def add_to_read_book(book_id: str):
         user = get_current_user()
         if not isinstance(user, Users):
             return user
 
-        book = obj_or_404(Book, book_id, "No se ha encontrado el libro")
-        if not isinstance(book, Book):
-            return book
+        book = ensure_book(book_id)
 
         exists = db.session.scalars(
             select(UserBookStatus).filter_by(
@@ -149,38 +133,29 @@ def register_book_endpoints(app):
         db.session.commit()
         return jsonify(serialize_link(link, book)), 201
 
-    @app.route("/to_read/book/<string:book_id>", methods=["DELETE"])
+    @app.route("/to_read/delete_book/<string:book_id>", methods=["DELETE"])
+    @jwt_required()
     def remove_to_read_book(book_id: str):  # quita el libro de la lista de "para leer"
         user = get_current_user()
         if not isinstance(user, Users):
             return user
 
-        book = obj_or_404(Book, book_id, "No se ha encontrado el libro")
-        if not isinstance(book, Book):
-            return book
+        deleted = unset_user_book_status(user.id, book_id, BookStatusEnum.to_read)
 
-        link = db.session.scalars(
-            select(UserBookStatus).filter_by(
-                user_id=user.id, book_id=book.id, status=BookStatusEnum.to_read
-            )
-        ).first()
-        if not link:
-            return jsonify({"error": "No estaba en 'por leer'"}), 404
-
-        db.session.delete(link)
-        db.session.commit()
-        return jsonify({"message": "Eliminado de 'por leer'"}), 200
+        if deleted:
+            return jsonify({"message": "Eliminado de pendientes"}), 200
+        else:
+            return jsonify({"message": "No estaba en pendientes (sin cambios)"}), 200
 
     # READ
-    @app.route("/read/book/<string:book_id>", methods=["POST"])
+    @app.route("/read/add_book/<string:book_id>", methods=["POST"])
+    @jwt_required()
     def add_read_book(book_id: str):  # marcamos el libro como "leído"
         user = get_current_user()
         if not isinstance(user, Users):
             return user
 
-        book = obj_or_404(Book, book_id, "No se ha encontrado el libro")
-        if not isinstance(book, Book):
-            return book
+        book = ensure_book(book_id)
 
         exists = db.session.scalars(
             select(UserBookStatus).filter_by(
@@ -198,30 +173,23 @@ def register_book_endpoints(app):
         db.session.commit()
         return jsonify(serialize_link(link, book)), 201
 
-    @app.route("/read/book/<string:book_id>", methods=["DELETE"])
+    @app.route("/read/delete_book/<string:book_id>", methods=["DELETE"])
+    @jwt_required()
     def remove_read_book(book_id: str):  # quitamos el estado de "leído" para el libro.
         user = get_current_user()
         if not isinstance(user, Users):
             return user
 
-        book = obj_or_404(Book, book_id, "No se ha encontrado el libro")
-        if not isinstance(book, Book):
-            return book
+        deleted = unset_user_book_status(user.id, book_id, BookStatusEnum.read)
 
-        link = db.session.scalars(
-            select(UserBookStatus).filter_by(
-                user_id=user.id, book_id=book.id, status=BookStatusEnum.read
-            )
-        ).first()
-        if not link:
-            return jsonify({"error": "No estaba en 'leído'"}), 404
-
-        db.session.delete(link)
-        db.session.commit()
-        return jsonify({"message": "Eliminado de 'leído'"}), 200
+        if deleted:
+            return jsonify({"message": "Eliminado de leídos"}), 200
+        else:
+            return jsonify({"message": "No estaba en leídos (sin cambios)"}), 200
 
     # LISTADO DE LIBROS DEL USUARIO FILTRADO POR STATUS
     @app.route("/books/mine", methods=["GET"])
+    @jwt_required()
     def list_my_books():
         user = get_current_user()
         if not isinstance(user, Users):

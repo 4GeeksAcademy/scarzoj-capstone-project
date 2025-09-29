@@ -1,6 +1,6 @@
 import { baseUrl, fetchWrapper } from './config';
 
-const usersEndpoint = `${baseUrl}favourites`;
+const favoritesEndpoint = `${baseUrl}favourites`;
 
 export const getCurrentUser = async () => {
   return await fetchWrapper(`${baseUrl}me`, {
@@ -10,8 +10,30 @@ export const getCurrentUser = async () => {
   });
 };
 
+export const getCurrentProfile = async () => {
+  return await fetchWrapper(`${baseUrl}profile`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const editProfile = async (displayname, description, avatar) => {
+  return await fetchWrapper(`${baseUrl}/profilepost`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({
+      display_name: displayname,
+      description: description,
+      avatar: avatar,
+    }),
+  }).then((data) => {
+    return data;
+  });
+};
+
 export const getUserFavourites = async () => {
-  return await fetchWrapper(usersEndpoint, {
+  return await fetchWrapper(favoritesEndpoint, {
     credentials: 'include',
   }).then((data) => {
     return data;
@@ -19,7 +41,7 @@ export const getUserFavourites = async () => {
 };
 
 export const postUserFavourite = async (externalId, name, type) => {
-  return await fetchWrapper(usersEndpoint, {
+  return await fetchWrapper(favoritesEndpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -36,7 +58,7 @@ export const postUserFavourite = async (externalId, name, type) => {
 };
 
 export const deleteUserFavourite = async (favouriteId) => {
-  return await fetchWrapper(usersEndpoint, {
+  return await fetchWrapper(favoritesEndpoint, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -48,30 +70,4 @@ export const deleteUserFavourite = async (favouriteId) => {
   }).then((data) => {
     return data;
   });
-};
-
-export const updateUserProfile = async (payload) => {
-  return await fetchWrapper(`${baseUrl}me`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
-};
-
-export const uploadUserAvatar = async (file) => {
-  const form = new FormData();
-  form.append('file', file);
-  const res = await fetchWrapper(`${baseUrl}me/avatar`, {
-    method: 'POST',
-    credentials: 'include',
-    body: form,
-  });
-  if (!res.ok) {
-    throw new Error(`Upload avatar failed: ${res.status} ${res.statusText}`);
-  }
-  const data = await res.json();
-  const url = data.url || data.location || data.imageUrl;
-  if (!url) throw new Error('Upload avatar: response missing URL');
-  return { url };
 };

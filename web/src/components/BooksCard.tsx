@@ -20,7 +20,7 @@ export function CardBook({ id, title, cover, authors, setStatus }: Props) {
           component="img"
           image={coverSrc}
           alt={`Portada de ${title}`}
-          sx={{ height: 220, objectFit: "cover", bgcolor: "grey.100" }}
+          sx={{ height: 150, objectFit: "cover", bgcolor: "grey.100" }}
           loading="lazy"
         />
         <CardContent sx={{ textAlign: "center" }}>
