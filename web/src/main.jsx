@@ -1,8 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
-import 'leaflet/dist/leaflet.css'; /*Para que los iconos y el mapa se vean correctamente.*/
-
 import 'bootstrap/dist/css/bootstrap.min.css'; /*API Googlemaps*/
 
 import { StrictMode } from 'react';
