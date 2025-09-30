@@ -1,21 +1,17 @@
 import { Routes, Route } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { NavBar } from './components/NavBar';
 import { routesConfig } from './services/routing/routes';
 import { GuardedRoute } from './components/routing/GuardedRoute';
-import { LoginRedirect } from './components/routing/LoginRedirect';
 import Adondeir from './pages/Adondeir';
+import Inicio from './pages/Inicio';
 
 export const App = () => {
   return (
     <>
-      <NavBar />
       <Routes>
-        {/* Ruta pública */}
-        <Route path="/login" element={<LoginRedirect />} />
-
-        {/* Nueva ruta pública??? */}
+        <Route path="/Inicio" element={<Inicio />} />
         <Route path="/Adondeir" element={<Adondeir />} />
+        <Route path="*" element={<Inicio />} />
 
         {/* Rutas privadas */}
         <Route element={<GuardedRoute />}>
