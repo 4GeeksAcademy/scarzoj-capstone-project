@@ -21,9 +21,12 @@
     "*.py": "pipenv run ruff format"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.7",
     "bootstrap": "^5.3.8",
     "framer-motion": "^12.23.13",
+    "leaflet": "^1.9.4",
     "react-bootstrap": "^2.10.10",
+    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.9.1"
   }
 }
