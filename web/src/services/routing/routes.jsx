@@ -1,11 +1,12 @@
-import DogFriendly from '../../pages/Inicio';
+import Adondeir from '../../pages/Adondeir';
+import Inicio from '../../pages/Inicio';
 import { Login } from '../../pages/Login';
 
 export const routesConfig = [
   {
     name: 'Root',
     path: '/',
-    component: <DogFriendly />,
+    component: <Inicio />,
   },
   {
     name: 'Login',
@@ -15,6 +16,12 @@ export const routesConfig = [
   {
     name: 'All',
     path: '*',
-    component: <DogFriendly />,
+    component: <Inicio />,
+  },
+  {
+    name: 'Adondeir',
+    path: '/Adondeir',
+    component: <Adondeir />,
+    private: false, // 👈 así la consideras pública
   },
 ];
