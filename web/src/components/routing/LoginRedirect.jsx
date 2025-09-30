@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { Navigate } from "react-router";
-import { isEmpty } from "lodash";
+import { useContext } from 'react';
+import { Navigate } from 'react-router';
+import { isEmpty } from 'lodash';
 
-import { UserContext } from "../../context/User";
-import { Login } from "../../pages/Login";
+import { UserContext } from '../../context/User';
+import { Inicio } from '../../pages/Inicio';
 
 export const LoginRedirect = () => {
   const { user } = useContext(UserContext);
@@ -12,5 +12,5 @@ export const LoginRedirect = () => {
     return <Navigate to="/" replace />;
   }
 
-  return <Login />;
+  return <Inicio />;
 };

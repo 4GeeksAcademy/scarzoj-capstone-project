@@ -6,5 +6,5 @@ export const Home = () => {
     console.log(data);
   });
 
-  return <>Home</>;
+  return Home;
 };
