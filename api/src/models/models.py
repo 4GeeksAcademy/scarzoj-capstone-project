@@ -1,4 +1,4 @@
-from sqlalchemy import String, VARCHAR, ForeignKey, JSON, Index, Integer, Enum as SAEnum
+from sqlalchemy import String, VARCHAR, ForeignKey, JSON, Index, Integer, Enum as PGEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db import db
@@ -41,7 +41,7 @@ class Profile(db.Model):
     id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
     )
-    picture: Mapped[str] = mapped_column(String(200), nullable=False)
+    avatar: Mapped[str] = mapped_column(String(200), nullable=False)
     display_name: Mapped[str] = mapped_column(String(80), nullable=False)
     description: Mapped[str] = mapped_column(String(400), nullable=False)
 
@@ -51,7 +51,7 @@ class Profile(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "picture": self.picture,
+            "avatar": self.avatar,
             "display_name": self.display_name,
             "description": self.description,
         }
@@ -72,10 +72,17 @@ class Book(db.Model):
     )
 
 
-class BookStatusEnum(str, Enum):
+class BookStatusEnum(Enum):
     favorite = "favorite"
     to_read = "to_read"
     read = "read"
+
+
+BookStatusEnumType = PGEnum(
+    BookStatusEnum,
+    name="book_status_enum",
+    create_type=False,  # ← que no intente crear el tipo desde el modelo
+)
 
 
 class UserBookStatus(db.Model):
@@ -88,9 +95,7 @@ class UserBookStatus(db.Model):
         ForeignKey("books.id", ondelete="CASCADE"), primary_key=True
     )
 
-    status: Mapped[BookStatusEnum] = mapped_column(
-        SAEnum(BookStatusEnum, name="book_status_enum"), primary_key=True
-    )
+    status: Mapped[BookStatusEnum] = mapped_column(BookStatusEnumType, nullable=False)
 
     note: Mapped[str | None] = mapped_column(String(500))
     rating: Mapped[int | None] = mapped_column(Integer)

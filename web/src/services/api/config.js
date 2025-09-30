@@ -1,15 +1,16 @@
-export const baseUrl = "/api/";
+export const baseUrl = '/api/';
 
-export const usersUrl = "users/";
+export const usersUrl = 'users/';
 
 export const fetchWrapper = async (input, init) => {
+  console.log(init);
   return await fetch(input, {
     ...init,
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-TOKEN": sessionStorage.getItem("csrf_access_token") || "",
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': sessionStorage.getItem('csrf_access_token') || '',
     },
-    credentials: "include",
+    credentials: 'include',
   })
     .then((response) => {
       if (response.ok) {

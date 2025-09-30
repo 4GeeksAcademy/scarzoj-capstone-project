@@ -1,8 +1,7 @@
-import {
-  getCurrentUser,
-  updateUserProfile,
-  uploadUserAvatar,
-} from '../services/api/users';
+import { editProfile, getCurrentProfile } from '../services/api/users';
+import { useRef, useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router';
+import defaultAvatar from '../assets/ImagenUsuarioGeneral.jpg';
 import Grid from '@mui/material/Grid2';
 import {
   Avatar,
@@ -18,20 +17,17 @@ import {
 import Edit from '@mui/icons-material/Edit';
 import Save from '@mui/icons-material/Save';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { useRef, useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router';
-import defaultAvatar from '../assets/ImagenUsuarioGeneral.jpg';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export const Home = () => {
   const [profile, setProfile] = useState({
-    username: 'usuario_demo',
-    nick: 'MiNick',
-    bio: '',
-    avatarUrl: undefined,
+    username: 'user_name',
+    display_name: 'display_name',
+    description: '',
+    avatarNumber: 'avatar',
   });
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState({ ...profile, avatarFile: null });
+  const [draft, setDraft] = useState({ ...profile });
   const fileRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const objectUrlRef = useRef(null);
@@ -41,13 +37,11 @@ export const Home = () => {
     let cancel = false;
     (async () => {
       try {
-        const data = await getCurrentUser();
+        const data = await getCurrentProfile();
         const mapped = {
-          username: data?.username ?? data?.user?.username ?? 'usuario_demo',
-          nick:
-            data?.nick ?? data?.user?.nick ?? data?.username ?? 'usuario_demo',
-          bio: data?.bio ?? '',
-          avatarUrl: data?.avatarUrl ?? data?.avatar ?? undefined,
+          display_name: data?.display_name ?? 'not_available',
+          description: data?.description ?? 'not available',
+          avatar: data?.avantar ?? 'not_available',
         };
         if (!cancel) {
           setProfile(mapped);
@@ -67,7 +61,7 @@ export const Home = () => {
   }, []);
 
   const handlePickAvatar = () => {
-    setEditing(true); // así el Avatar mira a draft.*
+    setEditing(true);
     if (fileRef.current) fileRef.current.click();
   };
 
@@ -94,31 +88,23 @@ export const Home = () => {
     }
   };
 
-  //GUARDAR CAMBIOS (NICK/BIO/AVATAR)
+  //GUARDAR CAMBIOS (NICK/DESCRIPTION)
   const handleSave = async () => {
     try {
-      let avatarUrlToSave = profile.avatarUrl;
-      if (draft.avatarFile) {
-        const { url } = await uploadUserAvatar(draft.avatarFile);
-        avatarUrlToSave = url;
-      }
-
-      const payload = {
-        nick: draft.nick,
-        bio: draft.bio,
-        avatarUrl: avatarUrlToSave,
-      };
-
-      const saved = await updateUserProfile(payload);
-
+      console.log('draft');
+      console.log(draft);
       const mapped = {
-        username: saved?.username ?? profile.username,
-        nick: saved?.nick ?? draft.nick,
-        bio: saved?.bio ?? draft.bio,
-        avatarUrl: saved?.avatarUrl ?? avatarUrlToSave,
+        display_name: draft.display_name ?? profile.display_name ?? 'tu_nombre',
+        description:
+          draft.description ?? profile.display_name ?? 'tu_descripcion',
+        avatar: draft.avatarNumber ?? profile.avatarNumber ?? '0',
       };
+      console.log('mapped');
+      console.log(mapped);
+      await editProfile(mapped.display_name, mapped.description, mapped.avatar);
+
       setProfile(mapped);
-      setDraft({ ...mapped, avatarFile: null });
+      setDraft({ ...mapped });
       setEditing(false);
     } catch (e) {
       console.error('No se pudo guardar el perfil', e);
@@ -221,13 +207,13 @@ export const Home = () => {
                     {!editing ? (
                       <>
                         <Typography variant="h5" fontWeight={800}>
-                          {profile.nick}{' '}
+                          {profile.display_name}{' '}
                           <Typography component="span" color="text.secondary">
-                            @{profile.username}
+                            @{profile.display_name}
                           </Typography>
                         </Typography>
                         <Typography color="text.secondary" sx={{ mt: 1 }}>
-                          {profile.bio ||
+                          {profile.description ||
                             'Añade una breve descripción sobre ti.'}
                         </Typography>
                       </>
@@ -235,26 +221,25 @@ export const Home = () => {
                       <Stack spacing={1.5}>
                         <TextField
                           label="Nick"
-                          value={draft.nick}
+                          value={draft.display_name}
                           onChange={(e) =>
-                            setDraft((p) => ({ ...p, nick: e.target.value }))
+                            setDraft((p) => ({
+                              ...p,
+                              display_name: e.target.value,
+                            }))
                           }
                           slotProps={{ input: { maxLength: 32 } }}
-                        />
-                        <TextField
-                          label="Usuario (registro)"
-                          value={`@${profile.username}`}
-                          disabled
-                          helperText="El nick se muestra, el usuario se enlaza."
-                          slotProps={{ input: { readOnly: true } }}
                         />
                         <TextField
                           label="Descripción"
                           multiline
                           minRows={3}
-                          value={draft.bio}
+                          value={draft.description}
                           onChange={(e) =>
-                            setDraft((p) => ({ ...p, bio: e.target.value }))
+                            setDraft((p) => ({
+                              ...p,
+                              description: e.target.value,
+                            }))
                           }
                           placeholder="Cuéntanos algo breve sobre ti…"
                           slotProps={{ input: { maxLength: 500 } }}

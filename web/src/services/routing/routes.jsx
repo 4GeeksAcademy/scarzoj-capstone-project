@@ -3,6 +3,7 @@ import { Login } from '../../pages/LoginPage';
 import Leidos from '../../pages/LeidosPage';
 import PorLeer from '../../pages/PorLeerPage';
 import Favoritos from '../../pages/FavoritePage';
+import SearchResults from '../../pages/searchResoultsPage';
 
 export const routesConfig = [
   {
@@ -23,4 +24,5 @@ export const routesConfig = [
   { name: 'Favoritos', path: '/favoritos', element: <Favoritos /> },
   { name: 'Leídos', path: '/leidos', element: <Leidos /> },
   { name: 'Por Leer', path: '/por-leer', element: <PorLeer /> },
+  { name: 'Resultados', path: '/search', element: <SearchResults /> },
 ];

@@ -8,15 +8,19 @@ from flask_migrate import Migrate
 from src.db import db
 from src.admin.setup_admin import setup_admin
 from flask_cors import CORS
-
+from src.routes.google_books import search_book
+from src.routes.books_endpoints import register_book_endpoints
 from flask_jwt_extended import (
     JWTManager,
 )
+from src.routes.profile_endpoints import register_profile_endpoints
 
 load_dotenv()
 app = Flask(__name__)
 start_time = time.time()
-
+search_book(app)
+register_book_endpoints(app)
+register_profile_endpoints(app)
 db_url = os.getenv("DATABASE_URL")
 
 if db_url is not None:

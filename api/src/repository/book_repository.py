@@ -1,6 +1,6 @@
 from typing import Dict, Any, List, Optional
 from sqlalchemy import select, delete
-from api.src.models.models import db, Book, UserBookStatus, BookStatusEnum
+from src.models.models import db, Book, UserBookStatus, BookStatusEnum
 
 
 # MAPEAMOS los campos que nos interesan para insertar/actualizar en 'books'. Retorna un dict listo para pasarlo al repositorio.
@@ -86,20 +86,3 @@ def list_user_books(
 
     if status:
         q = q.filter(UserBookStatus.status == status)
-
-    rows = []
-    for link, book in q.all():
-        rows.append(
-            {
-                "book_id": book.id,
-                "title": book.title,
-                "authors": book.authors_json or [],
-                "thumbnail": book.thumbnail,
-                "info_link": book.info_link,
-                "status": link.status.value,
-                "note": link.note,
-                "rating": link.rating,
-            }
-        )
-
-    return rows

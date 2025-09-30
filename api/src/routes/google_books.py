@@ -1,28 +1,27 @@
 from flask import (
     request,
     jsonify,
-)  # Trae el objeto 'request' (para leer query params, headers, etc.) y 'jsonify' (para devolver JSON bien formateado en Flask).
-import requests  # Cliente HTTP para hacer la llamada saliente a Google.
-import os  # Para leer variables de entorno (aquí, la API key).
-from flask_jwt_extended import (
-    jwt_required,
-)  # Extensión de Flask para JWT: control de acceso por token.
+)
+import requests
+import os
+from flask_jwt_extended import jwt_required
+from src.repository.book_repository import volume_to_book_fields
 
 GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
 
 
-def google_books_routes(
+def search_book(
     app,
 ):  # Función que registra rutas en una app Flask que te pasan por parámetro.
-    @jwt_required()  # Decorador que exige un JWT válido para acceder a la ruta.
     @app.route(
-        "/gbooks/<path:path>", methods=["GET"]
+        "/gbooks/search", methods=["GET"]
     )  # Define la ruta. '<path:path>' captura subrutas con barras.
-    def proxy_gbooks(path):  # Handler que actuará de proxy hacia Google Books.
-        url = f"{GOOGLE_BOOKS_URL}{path}"  # Construye la URL destino concatenando base + path capturado.
+    @jwt_required()  # Decorador que exige un JWT válido para acceder a la ruta.
+    def proxy_gbooks():  # Handler que actuará de proxy hacia Google Books.
+        url = f"{GOOGLE_BOOKS_URL}/volumes/"  # Construye la URL destino concatenando base + path capturado.
 
         params = dict(
-            request.args
+            request.args + "&langRestrict=es,en&printType=books"
         )  # Copia los query params que envió el cliente (?q=...&maxResults=...).
         api_key = os.getenv(
             "GOOGLE_API_KEY"
@@ -37,8 +36,12 @@ def google_books_routes(
                 jsonify(proxy_request.json()),
                 proxy_request.status_code,
             )  # Devuelve al cliente el JSON que respondió Google y reusa el status code.
-        except requests.RequestException:
+
+        except Exception as e:
+            print(f"Found General Exception in search_book {e}")
+
+        except requests.RequestException as e:
             return (
-                jsonify({"error": "Failed to fetch from Google Books"}),
+                jsonify({"error": f"Failed to fetch from Google Books{e}"}),
                 502,
             )  # Si hubo un error de red/timeout/etc., devuelve un 502 (Bad Gateway).

@@ -51,11 +51,15 @@ rm -rf migrations || true
 
 # Reinitialize Alembic migrations
 echo "Reinitializing migrations..."
+
 export FLASK_APP=src/app.py
 export DATABASE_URL="$DATABASE_URL"
 
+echo "Database init"
 pipenv run flask db init || true
+echo "DAtabase migrate"
 pipenv run flask db migrate -m "initial" || true
+echo "Database upgrade"
 pipenv run flask db upgrade || true
 
 echo "Database reset complete ✅"
