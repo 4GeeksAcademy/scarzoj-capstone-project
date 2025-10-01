@@ -10,33 +10,43 @@ import {
   Form,
   InputGroup,
   Spinner,
+  Offcanvas,
+  Alert,
 } from 'react-bootstrap';
-import { FaSearch, FaStar, FaRegStar, FaUser } from 'react-icons/fa';
+import { FaSearch, FaStar, FaRegStar, FaUser, FaHeart } from 'react-icons/fa';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 const Adondeir = () => {
   const [query, setQuery] = useState('');
-  const [places, setPlaces] = useState([]); // lugares buscados
-  const [favorites, setFavorites] = useState([]); // array de lugares favoritos
+  const [places, setPlaces] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const mapRef = useRef(null);
 
+  // Simulación de sesión (puedes reemplazar por tu lógica real)
+  const isLoggedIn = true; // 👈 Cambia a false para probar
+
   const defaultCenter = { lat: 40.416775, lng: -3.70379 }; // Madrid
 
-  // Buscar lugares con Google Places API
+  // Buscar lugares
   const handleSearch = () => {
     if (!query) return;
     setLoading(true);
 
-    const service = new window.google.maps.places.PlacesService(
-      document.createElement('div')
-    );
+    if (!mapRef.current) {
+      console.error('Mapa aún no está listo');
+      setLoading(false);
+      return;
+    }
+
+    const service = new window.google.maps.places.PlacesService(mapRef.current);
 
     const request = {
       query,
-      fields: ['name', 'geometry', 'photos', 'place_id'],
-      locationBias: defaultCenter,
+      location: defaultCenter,
       radius: 5000,
     };
 
@@ -45,6 +55,7 @@ const Adondeir = () => {
         const mapped = results.map((place) => ({
           id: place.place_id,
           name: place.name,
+          address: place.formatted_address,
           location: place.geometry?.location,
           photo:
             place.photos && place.photos.length > 0
@@ -52,13 +63,21 @@ const Adondeir = () => {
               : null,
         }));
         setPlaces(mapped);
+      } else {
+        setPlaces([]);
       }
       setLoading(false);
     });
   };
 
-  // Alternar favorito
+  // Alternar favoritos
   const toggleFavorite = (place) => {
+    if (!isLoggedIn) {
+      setAlert('Debes iniciar sesión para guardar favoritos.');
+      setTimeout(() => setAlert(null), 3000);
+      return;
+    }
+
     setFavorites((prev) => {
       if (prev.find((f) => f.id === place.id)) {
         return prev.filter((f) => f.id !== place.id);
@@ -82,13 +101,28 @@ const Adondeir = () => {
       <Navbar bg="info" expand="lg" className="px-3">
         <Container fluid>
           <Navbar.Brand>PerriFans</Navbar.Brand>
-          <Nav className="ms-auto align-items-center">
+          <Nav className="ms-auto align-items-center gap-2">
+            {isLoggedIn && (
+              <Button
+                variant="outline-dark"
+                onClick={() => setShowFavorites(true)}
+              >
+                <FaHeart /> Favoritos
+              </Button>
+            )}
             <Button variant="outline-dark">
               <FaUser />
             </Button>
           </Nav>
         </Container>
       </Navbar>
+
+      {/* Alerta */}
+      {alert && (
+        <Alert variant="warning" className="m-3 text-center">
+          {alert}
+        </Alert>
+      )}
 
       {/* Barra de búsqueda */}
       <Container fluid className="bg-light py-3">
@@ -108,8 +142,9 @@ const Adondeir = () => {
       {/* Contenido principal */}
       <Container fluid className="my-4">
         <Row>
-          {/* Lista de lugares */}
-          <Col md={4}>
+          {/* Columna izquierda: resultados */}
+          <Col md={4} style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            <h5>Resultados</h5>
             {places.map((place) => (
               <Card
                 key={place.id}
@@ -119,9 +154,10 @@ const Adondeir = () => {
               >
                 <Card.Body className="d-flex justify-content-between align-items-center">
                   <div>
-                    <Card.Title style={{ marginBottom: 8 }}>
+                    <Card.Title style={{ marginBottom: 4 }}>
                       {place.name}
                     </Card.Title>
+                    <small className="text-muted">{place.address}</small>
                     <div
                       style={{
                         backgroundColor: '#c5e1a5',
@@ -132,6 +168,7 @@ const Adondeir = () => {
                         justifyContent: 'center',
                         borderRadius: '8px',
                         overflow: 'hidden',
+                        marginTop: '6px',
                       }}
                     >
                       {place.photo ? (
@@ -174,59 +211,9 @@ const Adondeir = () => {
             )}
           </Col>
 
-          {/* Mapa */}
-          <Col md={8} style={{ position: 'relative' }}>
-            {/* Panel flotante de favoritos */}
-            {favorites.length > 0 && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  zIndex: 1000,
-                  backgroundColor: 'rgba(255,255,255,0.95)',
-                  padding: '10px',
-                  borderRadius: '8px',
-                  boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-                  maxHeight: '250px',
-                  overflowY: 'auto',
-                  width: '220px',
-                }}
-              >
-                <h6>Favoritos ⭐</h6>
-                {favorites.map((fav) => (
-                  <div
-                    key={fav.id}
-                    style={{
-                      cursor: 'pointer',
-                      marginBottom: '6px',
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
-                    onClick={() => goToPlace(fav.location)}
-                  >
-                    {fav.photo && (
-                      <img
-                        src={fav.photo}
-                        alt={fav.name}
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: '4px',
-                          objectFit: 'cover',
-                        }}
-                      />
-                    )}
-                    <span>{fav.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div style={{ height: '450px', width: '100%' }}>
+          {/* Columna derecha: mapa */}
+          <Col md={8}>
+            <div style={{ height: '600px', width: '100%' }}>
               <LoadScript
                 googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
                 libraries={['places']}
@@ -252,6 +239,47 @@ const Adondeir = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* Modal lateral de Favoritos */}
+      <Offcanvas
+        show={showFavorites}
+        onHide={() => setShowFavorites(false)}
+        placement="end"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Mis Favoritos</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {favorites.length > 0 ? (
+            favorites.map((fav) => (
+              <Card
+                key={fav.id}
+                className="mb-2"
+                style={{ cursor: 'pointer' }}
+                onClick={() => goToPlace(fav.location)}
+              >
+                <Card.Body className="d-flex align-items-center gap-2">
+                  {fav.photo && (
+                    <img
+                      src={fav.photo}
+                      alt={fav.name}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: '4px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  )}
+                  <span>{fav.name}</span>
+                </Card.Body>
+              </Card>
+            ))
+          ) : (
+            <p className="text-muted">No tienes favoritos guardados.</p>
+          )}
+        </Offcanvas.Body>
+      </Offcanvas>
 
       {/* Footer */}
       <footer className="bg-info text-center py-3">
